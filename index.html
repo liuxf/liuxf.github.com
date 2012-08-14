@@ -9,7 +9,6 @@
   <body>
     <script>
       (function(window, undefined){
-        var document = window.document;
         var hasOwn = Object.prototype.hasOwnProperty;
         var KEY = undefined;
         var objName = 'UX';
@@ -27,18 +26,29 @@
         UX.mix(UX, {
           debug:false,
           log:function(msg){
-            if (!UX.debug) { return; }
-            if (window.console) {
-                console.log(msg);
-            } else {
-                if (document.title.length + msg.length > 90) {
-                    document.title = msg;
-                } else {
-                    document.title += '|' + msg;
-                }
+            if (UX.debug && window.console) {
+                window.console.log(msg);
             }
           },
           noop:function(){},
+          each:function(object, fn){
+            if(typeof fn === 'function'){
+              var length = object.length;
+              if(length === undefined){
+                for(KEY in object){
+                  if(fn.call(object[KEY], KEY, object[KEY]) === false){
+                    break;
+                  }
+                }
+              }else{
+                for(KEY=0;KEY<length;KEY++){
+                  if(fn.call(object[KEY], KEY, object[KEY]) === false){
+                    break;
+                  }
+                }
+              }
+            }
+          },
           define:function(ns, object){
             if (typeof ns === 'string') {
                 var parent = UX;
@@ -57,7 +67,11 @@
                 return parent;
             }
             return ns;
-          }
+          },
+          error:function(e, type){
+        		type = type || Error;
+      			throw new type(e);
+      		}
         });
       })(this);
       UX.define('xxx',{a:1,b:2});
