@@ -7,6 +7,12 @@
     <title>TEST</title>
 </head>
 <body>
-    <script>document.write(navigator.userAgent)</script>
+    <script>
+        var html = [];
+        for(var k in WeixinJSBridge){
+            html.push(k + '===' + WeixinJSBridge[k]);
+        }
+        document.write(html.join('<br>'))
+    </script>
 </body>
 </html>
