@@ -1,0 +1,96 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>武媚娘滚床单</title>
+    <!--<link rel="icon" type="image/JPG" href="res/share.jpg"/>-->
+    <link rel="shortcut icon" sizes="256x256" href="res/share.jpg" />
+    <meta name="apple-mobile-web-app-capable" content="yes"/>
+    <meta name="full-screen" content="yes"/>
+    <meta name="screen-orientation" content="portrait"/>
+    <meta name="x5-fullscreen" content="true"/>
+    <meta name="360-fullscreen" content="true"/>
+    <style>
+        body, canvas, div {
+            -moz-user-select: none;
+            -webkit-user-select: none;
+            -ms-user-select: none;
+            -khtml-user-select: none;
+            -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
+        }
+    </style>
+</head>
+<body style="padding:0; margin: 0; background: #000;">
+<canvas id="gameCanvas" width="800" height="450"></canvas>
+
+<script src="WeixinApi.js"></script>
+<script>
+
+// share_icon = "/res/share.jpg"
+// 
+
+var wxData = {
+    "appId": "", // 服务号可以填写appId
+    "imgUrl" : 'http://files2.jinyinmao.com.cn/market/gcd/res/share.jpg',
+    "link" : 'http://files2.jinyinmao.com.cn/market/gcd/',
+    "desc" : '媚娘飞过10000米，该看不该看滴偶都看到啦。',
+    "title" : "武媚娘滚床单"
+};
+
+// 分享的回调
+var wxCallbacks = {
+    // 收藏操作是否触发回调，默认是开启的
+    favorite : false,
+
+    // 分享操作开始之前
+    ready : function() {
+        // 你可以在这里对分享的数据进行重组
+        //alert("准备分享");
+    },
+    // 分享被用户自动取消
+    cancel : function(resp) {
+        // 你可以在你的页面上给用户一个小Tip，为什么要取消呢？
+        //alert("分享被取消，msg=" + resp.err_msg);
+    },
+    // 分享失败了
+    fail : function(resp) {
+        // 分享失败了，是不是可以告诉用户：不要紧，可能是网络问题，一会儿再试试？
+        //alert("分享失败，msg=" + resp.err_msg);
+    },
+    // 分享成功
+    confirm : function(resp) {
+        // 分享成功了，我们是不是可以做一些分享统计呢？
+        //alert("分享成功，msg=" + resp.err_msg);
+        game_api.shareCallback();
+    },
+    // 整个分享过程结束
+    all : function(resp,shareTo) {
+        // 如果你做的是一个鼓励用户进行分享的产品，在这里是不是可以给用户一些反馈了？
+        //alert("分享" + (shareTo ? "到" + shareTo : "") + "结束，msg=" + resp.err_msg);
+    }
+};
+
+WeixinApi.share(wxData,wxCallbacks);
+
+var game_api = {
+	result: 0,
+	shareCallback: function(){
+		// to override
+	},
+	callback: function(){
+		//游戏结束后回调
+		//alert("我让媚娘飞越"+this.result+"米，该看不该看滴偶都看到了。非屌丝、女汉纸勿点！");
+		
+        wxData['desc'] = '不让看滴都看到了，我和媚娘双飞'+this.result+'米，要看你也来！';
+		
+		// 自定义分享到：微信好友、朋友圈、腾讯微博、QQ好友
+		WeixinApi.share(wxData,wxCallbacks);
+	}
+};
+
+</script>
+
+
+<script src="game.min.js"></script>
+</body>
+</html>
